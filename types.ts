@@ -43,6 +43,38 @@ export interface Product {
   updatedAt?: string;
 }
 
+export interface ProductStat {
+  productId: string;
+  soldCount: number;
+}
+
+export interface Statistics {
+  totalSold: number;
+  products: ProductStat[];
+}
+
+export interface OrderStatus {
+  code: string;
+  description: string;
+}
+
+export interface OrderItem {
+  productId: string;
+  quantity: number;
+}
+
+export interface Order {
+  id: string;
+  items: OrderItem[];
+  status: string;
+  statusDescription: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  description?: string;
+  createdAt: string;
+}
+
 export interface Logo {
   imgUrl: string;
   imgName: string;

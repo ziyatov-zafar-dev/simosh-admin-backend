@@ -11,6 +11,7 @@ import Admins from './pages/Admins';
 import Products from './pages/Products';
 import About from './pages/About';
 import LogoSettings from './pages/LogoSettings';
+import Orders from './pages/Orders';
 import Layout from './components/Layout';
 
 // Notification Types
@@ -205,6 +206,11 @@ const App: React.FC = () => {
                   } 
                 />
                 <Route path="products" element={<Products />} />
+                
+                {/* Orders Routing with Full Parameter Support */}
+                <Route path="orders" element={<Navigate to="/orders/all" replace />} />
+                <Route path="orders/:status" element={<Orders />} />
+                
                 <Route path="about" element={<About />} />
                 <Route path="logo" element={<LogoSettings />} />
               </Route>

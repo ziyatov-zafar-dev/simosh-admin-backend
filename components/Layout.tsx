@@ -20,6 +20,7 @@ const Layout: React.FC = () => {
 
   const navItems = [
     { label: 'Asosiy panel', path: '/', icon: '💎', roles: [UserRole.SUPER_ADMIN, UserRole.ADMIN] },
+    { label: 'Buyurtmalar', path: '/orders', icon: '📦', roles: [UserRole.SUPER_ADMIN, UserRole.ADMIN] },
     { label: 'Mahsulotlar', path: '/products', icon: '🛍️', roles: [UserRole.SUPER_ADMIN, UserRole.ADMIN] },
     { label: 'Biz haqimizda', path: '/about', icon: '🏢', roles: [UserRole.SUPER_ADMIN, UserRole.ADMIN] },
     { label: 'Logo', path: '/logo', icon: '🖼️', roles: [UserRole.SUPER_ADMIN, UserRole.ADMIN] },

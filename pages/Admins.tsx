@@ -70,8 +70,10 @@ const Admins: React.FC = () => {
     if (!confirmModal.id) return;
     try {
       await adminService.delete(confirmModal.id);
-      showNotification("O'chirildi", "success");
+      showNotification("Admin o'chirildi", "success");
       fetchAdmins();
+    } catch (err: any) {
+      showNotification("O'chirishda xatolik yuz berdi", "error");
     } finally {
       setConfirmModal({ open: false, id: null });
     }
@@ -141,7 +143,7 @@ const Admins: React.FC = () => {
         </div>
       </div>
 
-      {/* Admin Modal */}
+      {/* Admin Create/Edit Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xl animate-in fade-in duration-300">
           <div className="glass rounded-[2.5rem] sm:rounded-[4rem] w-full max-w-xl shadow-2xl border-white/20 overflow-hidden">
@@ -156,22 +158,54 @@ const Admins: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Username</label>
-                  <input type="text" required className="w-full px-5 py-4 sm:px-6 sm:py-5 rounded-2xl sm:rounded-3xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} />
+                  <input type="text" required className="w-full px-5 py-4 sm:px-6 sm:py-5 rounded-2xl sm:rounded-3xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email</label>
-                  <input type="email" required className="w-full px-5 py-4 sm:px-6 sm:py-5 rounded-2xl sm:rounded-3xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                  <input type="email" required className="w-full px-5 py-4 sm:px-6 sm:py-5 rounded-2xl sm:rounded-3xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
                 </div>
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Parol</label>
-                <input type="password" required={!editingAdmin} className="w-full px-5 py-4 sm:px-6 sm:py-5 rounded-2xl sm:rounded-3xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} placeholder="••••••••" />
+                <input type="password" required={!editingAdmin} className="w-full px-5 py-4 sm:px-6 sm:py-5 rounded-2xl sm:rounded-3xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} placeholder="••••••••" />
               </div>
               <div className="pt-6 flex flex-col sm:flex-row gap-4">
-                <button type="button" onClick={handleCloseModal} className="w-full py-4 sm:py-6 rounded-2xl sm:rounded-[2rem] font-black text-[10px] uppercase tracking-widest text-slate-500 bg-slate-100 dark:bg-slate-800">Bekor</button>
-                <button type="submit" className="w-full py-4 sm:py-6 rounded-2xl sm:rounded-[2rem] font-black text-[10px] uppercase tracking-widest text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-xl">Saqlash</button>
+                <button type="button" onClick={handleCloseModal} className="w-full py-4 sm:py-6 rounded-2xl sm:rounded-[2rem] font-black text-[10px] uppercase tracking-widest text-slate-500 bg-slate-100 dark:bg-slate-800 transition-all">Bekor</button>
+                <button type="submit" className="w-full py-4 sm:py-6 rounded-2xl sm:rounded-[2rem] font-black text-[10px] uppercase tracking-widest text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all">Saqlash</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {confirmModal.open && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="glass rounded-[2.5rem] sm:rounded-[3rem] p-10 sm:p-12 max-w-sm w-full border border-white/20 text-center animate-in zoom-in duration-300">
+            <div className="text-6xl mb-8 animate-bounce">⚠️</div>
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white uppercase mb-6 tracking-tighter">Adminni o'chirish?</h3>
+            
+            <div className="bg-red-500/10 border border-red-500/20 p-5 rounded-3xl mb-10 text-left">
+              <p className="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-2">Diqqat:</p>
+              <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed italic">
+                Ushbu amalni ortga qaytarib bo'lmaydi. Tanlangan admin foydalanuvchi tizimdan butunlay o'chib ketadi.
+              </p>
+            </div>
+
+            <div className="flex gap-4">
+              <button 
+                onClick={() => setConfirmModal({ open: false, id: null })} 
+                className="flex-1 py-4 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 font-black text-[10px] uppercase tracking-widest hover:bg-slate-200 transition-all"
+              >
+                Yo'q
+              </button>
+              <button 
+                onClick={handleDelete} 
+                className="flex-1 py-4 rounded-2xl bg-red-500 text-white font-black text-[10px] uppercase tracking-widest shadow-lg hover:bg-red-600 hover:scale-105 active:scale-95 transition-all shadow-red-500/20"
+              >
+                Ha, O'chirilsin
+              </button>
+            </div>
           </div>
         </div>
       )}
