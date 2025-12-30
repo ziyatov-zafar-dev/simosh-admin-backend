@@ -1,0 +1,5 @@
+{
+  "name": "Simosh Admin Dashboard",
+  "description": "A high-performance management console for Simosh, featuring secure two-factor authentication, full administrative CRUD operations, and real-time statistics visualization.",
+  "requestFramePermissions": []
+}
