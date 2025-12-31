@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { authService } from '../services/authService';
-import { useTheme } from '../App';
+// Fix: Import useTheme from AppContext instead of App
+import { useTheme } from '../AppContext';
 
 const ResetPassword: React.FC = () => {
   const location = useLocation();

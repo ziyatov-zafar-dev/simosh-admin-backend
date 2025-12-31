@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../services/authService';
-import { useAuth } from '../App';
+import { useAuth, useT } from '../AppContext';
 
 const Verify: React.FC = () => {
   const [code, setCode] = useState('');
@@ -11,6 +11,7 @@ const Verify: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
+  const t = useT();
   
   const username = location.state?.username;
 
@@ -35,7 +36,7 @@ const Verify: React.FC = () => {
       });
       navigate('/');
     } catch (err: any) {
-      setError(err.message || 'Tasdiqlash kodi noto\'g\'ri yoki muddati o\'tgan');
+      setError(err.message || 'Error');
     } finally {
       setLoading(false);
     }
@@ -45,22 +46,22 @@ const Verify: React.FC = () => {
     <div className="min-h-screen bg-mesh-light dark:bg-mesh-dark flex items-center justify-center p-4 transition-colors">
       <div className="max-w-md w-full glass rounded-[3rem] shadow-2xl p-12 border border-white/40 dark:border-white/5 animate-in zoom-in duration-500">
         <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-3xl shadow-lg animate-float">
+          <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-3xl shadow-lg">
             📧
           </div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Kodni tasdiqlang</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">Xavfsizlik kodi quyidagi manzilga yuborildi: <br/><span className="text-indigo-600 dark:text-indigo-400 font-bold">{username}</span></p>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{t('verify_title')}</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">{t('verify_desc')}: <br/><span className="text-indigo-600 dark:text-indigo-400 font-bold">{username}</span></p>
         </div>
 
         {error && (
-          <div className="bg-red-500/10 text-red-600 dark:text-red-400 p-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest mb-8 border border-red-500/20 animate-shake">
+          <div className="bg-red-500/10 text-red-600 dark:text-red-400 p-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest mb-8 border border-red-500/20">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="space-y-2">
-            <label className="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">Xavfsizlik PIN kodi</label>
+            <label className="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">{t('verify_pin')}</label>
             <input
               type="text"
               required
@@ -75,9 +76,9 @@ const Verify: React.FC = () => {
           <button
             type="submit"
             disabled={loading || code.length < 4}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:scale-105 hover:glow-primary active:scale-95 transition-all shadow-xl shadow-indigo-500/20 disabled:opacity-40"
+            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-xl shadow-indigo-500/20 disabled:opacity-40"
           >
-            {loading ? 'Tasdiqlanmoqda...' : 'Kirishni ochish'}
+            {loading ? '...' : t('verify_btn')}
           </button>
           
           <button
@@ -85,7 +86,7 @@ const Verify: React.FC = () => {
             onClick={() => navigate('/login')}
             className="w-full text-[10px] font-bold text-slate-400 dark:text-slate-600 uppercase tracking-widest hover:text-indigo-600 transition-colors"
           >
-            Bekor qilish
+            {t('cancel')}
           </button>
         </form>
       </div>

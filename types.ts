@@ -1,4 +1,7 @@
 
+
+export type Language = 'UZ' | 'RU' | 'EN' | 'TR';
+
 export enum UserRole {
   SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN'
@@ -9,6 +12,18 @@ export interface AuthState {
   refreshToken: string | null;
   role: UserRole | null;
   username: string | null;
+}
+
+// Added LoginResponse for auth service
+export interface LoginResponse {
+  message?: string;
+}
+
+// Added VerifyResponse for auth service
+export interface VerifyResponse {
+  accessToken: string;
+  refreshToken: string;
+  role: UserRole;
 }
 
 export interface AdminUser {
@@ -43,21 +58,6 @@ export interface Product {
   updatedAt?: string;
 }
 
-export interface ProductStat {
-  productId: string;
-  soldCount: number;
-}
-
-export interface Statistics {
-  totalSold: number;
-  products: ProductStat[];
-}
-
-export interface OrderStatus {
-  code: string;
-  description: string;
-}
-
 export interface OrderItem {
   productId: string;
   quantity: number;
@@ -73,6 +73,19 @@ export interface Order {
   phone: string;
   description?: string;
   createdAt: string;
+}
+
+// Added OrderStatus for statistics service
+export interface OrderStatus {
+  code: string;
+  label: string;
+}
+
+// Added Statistics for dashboard/statistics service
+export interface Statistics {
+  totalOrders: number;
+  totalRevenue: number;
+  revenueByCurrency: Record<string, number>;
 }
 
 export interface Logo {
@@ -93,20 +106,4 @@ export interface About {
   instagram: string;
   telegram: string;
   phone: string;
-}
-
-export interface ApiResponse<T> {
-  data?: T;
-  message?: string;
-  error?: string;
-}
-
-export interface LoginResponse {
-  message: string;
-}
-
-export interface VerifyResponse {
-  accessToken: string;
-  refreshToken: string;
-  role: UserRole;
 }

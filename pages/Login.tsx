@@ -2,7 +2,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/authService';
-import { useTheme } from '../App';
+// Fix: Import hooks from AppContext instead of App
+import { useTheme, useLanguage, useSetLanguage, useT } from '../AppContext';
+import { Language } from '../types';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -11,17 +13,20 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  // Fix: useLanguage, useSetLanguage, and useT return values directly in AppContext.tsx
+  const language = useLanguage();
+  const setLanguage = useSetLanguage();
+  const t = useT();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
     try {
       await authService.login(username, password);
       navigate('/verify', { state: { username } });
     } catch (err: any) {
-      setError(err.message || 'Login yoki parol noto\'g\'ri');
+      setError(err.message || 'Error');
     } finally {
       setLoading(false);
     }
@@ -29,80 +34,46 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-mesh-light dark:bg-mesh-dark">
-      {/* Decorative Blur Spheres */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/20 blur-[120px] rounded-full animate-pulse"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/20 blur-[120px] rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
-
-      {/* Theme Toggle */}
-      <button
-        onClick={toggleTheme}
-        className="fixed top-8 right-8 w-12 h-12 glass rounded-2xl flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all z-50 text-2xl"
-      >
-        {theme === 'light' ? '🌙' : '☀️'}
-      </button>
+      <div className="absolute top-8 right-8 flex gap-3 z-50">
+        <div className="relative group">
+          <button className="w-12 h-12 glass rounded-2xl flex items-center justify-center font-black text-[10px] uppercase">{language}</button>
+          <div className="absolute top-14 right-0 hidden group-hover:block glass rounded-2xl p-2 shadow-2xl min-w-[80px]">
+            {(['UZ', 'RU', 'EN', 'TR'] as Language[]).map(l => (
+              <button key={l} onClick={() => setLanguage(l)} className={`w-full text-center py-2 rounded-xl text-[10px] font-black hover:bg-indigo-600 hover:text-white transition-colors ${language === l ? 'bg-indigo-600 text-white' : ''}`}>{l}</button>
+            ))}
+          </div>
+        </div>
+        <button onClick={toggleTheme} className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-xl hover:scale-110 transition-all">{theme === 'light' ? '🌙' : '☀️'}</button>
+      </div>
 
       <div className="max-w-md w-full z-10 animate-in fade-in zoom-in duration-700">
         <div className="text-center mb-10">
-          <div className="inline-block p-4 rounded-3xl bg-white dark:bg-slate-900 shadow-2xl mb-6 animate-float">
+          <div className="inline-block p-4 rounded-3xl bg-white dark:bg-slate-900 shadow-2xl mb-6">
             <h1 className="text-5xl font-extrabold tracking-tighter bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">SiMoSh</h1>
           </div>
-          <p className="text-sm text-indigo-400 dark:text-indigo-300 font-bold tracking-[0.3em] uppercase">Boshqaruv Konsoli</p>
         </div>
 
         <div className="glass rounded-[3rem] p-10 md:p-12 shadow-2xl border border-white/40 dark:border-white/5 relative overflow-hidden">
           <div className="mb-8">
-            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Xush kelibsiz</h2>
-            <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">Tizimga kirish uchun ma'lumotlarni kiriting</p>
+            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{t('welcome')}</h2>
           </div>
 
-          {error && (
-            <div className="bg-red-500/10 text-red-600 dark:text-red-400 p-4 rounded-2xl text-xs mb-6 flex items-center border border-red-500/20 font-bold uppercase tracking-widest animate-shake">
-              <span className="mr-3 text-lg">⚡</span> {error}
-            </div>
-          )}
+          {error && <div className="bg-red-500/10 text-red-600 p-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest mb-6 border border-red-500/20">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="block text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Username yoki Email</label>
-              <input
-                type="text"
-                required
-                className="w-full px-6 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-indigo-500/20 outline-none transition-all bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700 font-semibold"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Login"
-              />
+              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">{t('username')}</label>
+              <input type="text" required className="w-full px-6 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 outline-none transition-all bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white font-semibold" value={username} onChange={(e) => setUsername(e.target.value)} />
             </div>
 
             <div className="space-y-2">
-              <div className="flex justify-between items-center px-1">
-                <label className="block text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Maxfiy parol</label>
-                {/* Fixed: Removed unsupported size prop from Link component */}
-                <Link to="/forgot-password" className="text-[11px] text-indigo-500 hover:text-indigo-600 font-bold uppercase tracking-widest transition-colors">Tiklash</Link>
-              </div>
-              <input
-                type="password"
-                required
-                className="w-full px-6 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-indigo-500/20 outline-none transition-all bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700 font-semibold"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-              />
+              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">{t('password')}</label>
+              <input type="password" required className="w-full px-6 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 outline-none transition-all bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white font-semibold" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-[1.02] hover:glow-primary active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl shadow-indigo-500/20"
-            >
-              {loading ? 'Tekshirilmoqda...' : 'Kirish'}
-            </button>
+            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-[1.02] transition-all shadow-xl shadow-indigo-500/20">{loading ? '...' : t('login_btn')}</button>
           </form>
         </div>
-        
-        <p className="text-center mt-12 text-[10px] text-slate-400 dark:text-slate-500 font-extrabold uppercase tracking-[0.4em]">
-          Powered by SiMoSh Group &bull; v3.1
-        </p>
       </div>
     </div>
   );
